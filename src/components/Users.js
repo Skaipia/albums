@@ -18,7 +18,7 @@ const Users = () => {
                     setLoaded(true);
                     setError(true)
                 });
-    }, [])
+    })
 
     if (error) {
         return <div>Ошибка: {error.message}</div>;
@@ -28,9 +28,9 @@ const Users = () => {
         return (
             <>
                 <h1>Users:</h1>
-                <ul className="posts">
-                    {users.map(({id, name}) =>
-                        <li key={id}><Link to={`/${id}`}>{name}</Link></li>
+                <ul className="users_list">
+                    {users.map(user =>
+                        <li className="users_list-item" key={user.id}><Link to={`/${user.id}`}>{user.name}</Link></li>
                     )}
                 </ul>
             </>
