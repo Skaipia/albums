@@ -7,7 +7,7 @@ const Albums = () => {
     const [error, setError] = useState(null)
     const [albums, setAlbums] = useState([])
     const [photo, setPhoto] = useState([])
-    const {id} = useParams();
+    const {idUser} = useParams();
     const history = useHistory();
 
     const backButton = () => {
@@ -15,7 +15,7 @@ const Albums = () => {
     }
 
     useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/users/${id}/albums`)
+        fetch(`https://jsonplaceholder.typicode.com/users/${idUser}/albums`)
             .then(response => response.json())
             .then(result => {
                     setAlbums(result)
@@ -25,7 +25,7 @@ const Albums = () => {
                     setLoaded(true);
                     setError(true)
                 });
-    }, [id])
+    }, [idUser])
 
     useEffect(() => {
         albums.map(item =>
@@ -44,11 +44,17 @@ const Albums = () => {
     } else {
         return (
             <div>
-                <h1>Albums</h1>
+                <div className="header-block">
+                    <h1 className="header">Albums</h1>
+                    <button className="back_button" type="button" onClick={backButton}>Back</button>
+                </div>
                 <ul className="album-list">
                     {photo.map((item, index) => (
                         <li className="album_item" key={index}>
-                            <Link className="album_item-link" to={`/${id}/${albums[index].id}`}>
+                            <Link className="album_item-link" to={{
+                                pathname: `/${idUser}/${albums[index].id}`,
+                                numAlbum: idUser,
+                            }}>
                                 <img alt="thumbnail" className="album_item-img" src={photo[index][0]}></img>
                                 <span className="album_item-count">{photo[index][1]} photos</span>
                                 <span className="album_item-title">{albums[index].title}</span>
@@ -56,7 +62,7 @@ const Albums = () => {
                         </li>
                     ))}
                 </ul>
-                <button className="back_button" type="button" onClick={backButton}>Back</button>
+
             </div>
         );
     }

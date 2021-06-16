@@ -27,7 +27,9 @@ const Users = () => {
     } else {
         return (
             <>
-                <h1>Users:</h1>
+                <div className="header-block">
+                    <h1>Users:</h1>
+                </div>
                 <ul className="users_list">
                     {users.map(user =>
                         <li className="users_list-item" key={user.id}><Link to={`/${user.id}`}>{user.name}</Link></li>

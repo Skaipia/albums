@@ -8,11 +8,11 @@ import Albums from "./components/Albums";
 import Album from "./components/Album";
 
 ReactDOM.render((
-<BrowserRouter>
+    <BrowserRouter>
         <Switch>
-            <Route exact path='/' component={Users} />
-            <Route path='/:id/' component={Albums} />
-            <Route path='/:id/:album/' component={Album} />
+            <Route exact path='/' component={Users}/>
+            <Route exact path='/:idUser/' component={Albums}/>
+            <Route path='/:idUser/:idAlbum/' component={Album}/>
         </Switch>
-</BrowserRouter>
+    </BrowserRouter>
 ), document.getElementById('root'));

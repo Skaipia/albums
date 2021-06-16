@@ -4,10 +4,19 @@ body {
     font-size: 18px;
     line-height: 20px;
 }
-
+h1,h2,h3 {
+    margin: 0;
+}
 #root {
     width: 960px;
     margin: 0 auto;
+}
+
+.header-block {
+    margin: 40px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 ul {
@@ -20,7 +29,7 @@ a {
     color: #444;
 }
 
-.album_item {
+.album_item, .folder-album_item {
     list-style: none;
 }
 
@@ -74,7 +83,6 @@ a:hover {
     color: #444;
     font-size: 18px;
     padding: 10px 34px;
-    margin-bottom: 50px;
     background-color: cornflowerblue;
     border-radius: 0;
     border: none;
@@ -84,4 +92,17 @@ a:hover {
     background-color: #6495ed9e;
     color: #3a3a3a;
     cursor: pointer;
+}
+
+.folder_album-ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.folder-album_item-link {
+    display: flex;
+}
+
+.folder-album_item {
+    margin: 5px;
 }

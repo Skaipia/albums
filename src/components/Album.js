@@ -1,26 +1,29 @@
 import {useState, useEffect} from "react";
 import {Link, useParams, useHistory} from "react-router-dom";
-// import Album from "./Album";
 
 const Album = (props) => {
     const [isLoaded, setLoaded] = useState(false)
     const [error, setError] = useState(null)
     const [albums, setAlbums] = useState([])
-    const {id} = useParams();
-    console.log('11', useParams())
-    useEffect((props) => {
-        // fetch(`https://jsonplaceholder.typicode.com/users/${id}/albums`)
-        //     .then(response => response.json())
-        //     .then(result => {
-        //             setLoaded(true);
-        //             setAlbums(result)
-        //         },
-        //         (error) => {
-        //             setLoaded(true);
-        //             setError(error)
-        //         });
-    }, [id])
+    const {idUser, idAlbum} = useParams();
+    const history = useHistory();
 
+    const backButton = (props) => {
+        history.push(`/${idUser}`);
+    }
+
+    useEffect(() => {
+        fetch(`https://jsonplaceholder.typicode.com/albums/${idAlbum}/photos`)
+            .then(response => response.json())
+            .then(result => {
+                    setAlbums(result)
+                    setLoaded(true)
+                },
+                (error) => {
+                    setLoaded(true);
+                    setError(true)
+                });
+    }, [idUser])
 
 
     if (error) {
@@ -31,8 +34,21 @@ const Album = (props) => {
         return (
             <div>
                 {console.log(albums)}
-                <h1>Album</h1>
-           <span>dsklf;sldkf;lskdfsd;kf;skd;f</span>
+                <div className="header-block">
+                    <h1 className="header">Album</h1>
+                    <button className="back_button" type="button" onClick={backButton}>Back</button>
+                </div>
+
+                <ul className="folder_album-ul">
+                    {albums.map(item => (
+                        <li className="folder-album_item" key={item.id}>
+                            <a className="folder-album_item-link">
+                                <img alt="photo" className="folder-album_item-img" src={item.thumbnailUrl}></img>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+
             </div>
         );
     }
