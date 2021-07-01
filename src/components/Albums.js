@@ -1,6 +1,5 @@
 import {useState, useEffect} from "react";
 import {Link, useParams, useHistory} from "react-router-dom";
-// import Album from "./Album";
 
 const Albums = () => {
     const [isLoaded, setLoaded] = useState(false)
@@ -9,10 +8,6 @@ const Albums = () => {
     const [photo, setPhoto] = useState([])
     const {idUser} = useParams();
     const history = useHistory();
-
-    const backButton = () => {
-        history.push("/");
-    }
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/users/${idUser}/albums`)
@@ -28,13 +23,12 @@ const Albums = () => {
     }, [idUser])
 
     useEffect(() => {
-        albums.map(item =>
-            fetch(`https://jsonplaceholder.typicode.com/albums/${item.id}/photos`)
-                .then(res => res.json())
-                .then(result => {
-                    setPhoto(photo => [...photo, [result[0].thumbnailUrl, result.length]]);
-                })
-        )
+        albums.reduce((p, item) => {
+            return p
+                .then(() => fetch(`https://jsonplaceholder.typicode.com/albums/${item.id}/photos`))
+                .then((res) => res.json())
+                .then((res) => setPhoto(photo => [...photo, [res[0].thumbnailUrl, res.length]]))
+        }, Promise.resolve());
     }, [albums])
 
     if (error) {
@@ -43,27 +37,23 @@ const Albums = () => {
         return <div className="loading">Загрузка...</div>;
     } else {
         return (
-            <div>
+            <>
                 <div className="header-block">
                     <h1 className="header">Albums</h1>
-                    <button className="back_button" type="button" onClick={backButton}>Back</button>
+                    <button className="back_button" type="button" onClick={history.goBack}>Back</button>
                 </div>
                 <ul className="album-list">
                     {photo.map((item, index) => (
                         <li className="album_item" key={index}>
-                            <Link className="album_item-link" to={{
-                                pathname: `/${idUser}/${albums[index].id}`,
-                                numAlbum: idUser,
-                            }}>
-                                <img alt="thumbnail" className="album_item-img" src={photo[index][0]}></img>
+                            <Link className="album_item-link" to={`/${idUser}/${albums[index].id}`}>
+                                <img alt="thumbnail" className="album_item-img" src={photo[index][0]}/>
                                 <span className="album_item-count">{photo[index][1]} photos</span>
                                 <span className="album_item-title">{albums[index].title}</span>
                             </Link>
                         </li>
                     ))}
                 </ul>
-
-            </div>
+            </>
         );
     }
 }

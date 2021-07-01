@@ -18,7 +18,7 @@ const Users = () => {
                     setLoaded(true);
                     setError(true)
                 });
-    })
+    }, [])
 
     if (error) {
         return <div>Ошибка: {error.message}</div>;

@@ -1,16 +1,16 @@
 import {useState, useEffect} from "react";
-import {Link, useParams, useHistory} from "react-router-dom";
+import {useParams, useHistory} from "react-router-dom";
+import ModalWindow from "./ModalWindow"
 
-const Album = (props) => {
-    const [isLoaded, setLoaded] = useState(false)
-    const [error, setError] = useState(null)
-    const [albums, setAlbums] = useState([])
-    const {idUser, idAlbum} = useParams();
+const Album = () => {
+    const [isLoaded, setLoaded] = useState(false);
+    const [error, setError] = useState(null);
+    const [albums, setAlbums] = useState([]);
+    const [arrayPhotoUrls, setArrayPhotoUrls] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [pointer, setPointer] = useState(0);
+    const {idAlbum} = useParams();
     const history = useHistory();
-
-    const backButton = (props) => {
-        history.push(`/${idUser}`);
-    }
 
     useEffect(() => {
         fetch(`https://jsonplaceholder.typicode.com/albums/${idAlbum}/photos`)
@@ -23,8 +23,26 @@ const Album = (props) => {
                     setLoaded(true);
                     setError(true)
                 });
-    }, [idUser])
 
+    }, [idAlbum])
+
+    useEffect(() => {
+        albums.map(item =>
+            setArrayPhotoUrls((prev) => [...prev, item.url])
+        )
+    }, [pointer])
+
+    const nextClick = () => {
+        const arrayLength = arrayPhotoUrls.length;
+        const newPointer = pointer === arrayLength - 1 ? 0 : pointer + 1;
+        setPointer(newPointer);
+    }
+
+    const prevClick = () => {
+        const arrayLength = arrayPhotoUrls.length;
+        const newPointer = pointer === 0 ? arrayLength - 1 : pointer - 1;
+        setPointer(newPointer);
+    }
 
     if (error) {
         return <div>Ошибка: {error.message}</div>;
@@ -32,24 +50,29 @@ const Album = (props) => {
         return <div>Загрузка...</div>;
     } else {
         return (
-            <div>
-                {console.log(albums)}
+            <>
                 <div className="header-block">
                     <h1 className="header">Album</h1>
-                    <button className="back_button" type="button" onClick={backButton}>Back</button>
+                    <button className="back_button" type="button" onClick={history.goBack}>Back</button>
                 </div>
-
                 <ul className="folder_album-ul">
-                    {albums.map(item => (
-                        <li className="folder-album_item" key={item.id}>
-                            <a className="folder-album_item-link">
-                                <img alt="photo" className="folder-album_item-img" src={item.thumbnailUrl}></img>
+                    {albums.map((item, index) => (
+                        <li onClick={() => setPointer(index)} className="folder-album_item"
+                            key={item.id}>
+                            <a onClick={() => setIsOpen(true)} className="folder-album_item-link">
+                                <img alt="thumbnail" className="folder-album_item-img" src={item.thumbnailUrl}/>
                             </a>
                         </li>
                     ))}
+                    <ModalWindow
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        onNext={nextClick}
+                        onPrev={prevClick}
+                        src={arrayPhotoUrls[pointer]}
+                    />
                 </ul>
-
-            </div>
+            </>
         );
     }
 }
